@@ -24,9 +24,14 @@ namespace keepr.Services
             return _kr.CreateKeep(keepData);
         }
 
-        internal Keep EditKeep(Keep editedKeep)
+        internal Keep EditKeep(Keep editedKeep, Account userInfo)
         {
             Keep original = GetKeepById(editedKeep.Id);
+
+            if(original.CreatorId != userInfo.Id){
+                throw new Exception("You may not edit this.");
+
+            }
 
             original.Name = editedKeep.Name != null ? editedKeep.Name : original.Name;
             original.Description = editedKeep.Description != null ? editedKeep.Description : original.Description;
@@ -39,7 +44,7 @@ namespace keepr.Services
             return original;
         }
 
-        private Keep GetKeepById(int id)
+        internal Keep GetKeepById(int id)
         {
             return _kr.GetKeepById(id);
         }
@@ -47,6 +52,11 @@ namespace keepr.Services
         internal string RemoveKeep(int id, Account userInfo)
         {
             Keep keep = _kr.GetKeepById(id);
+            if (keep == null)
+            {
+                // FIXME NEED THIS TO RETURN 204 CODE
+                return null;
+            }
             if (keep.CreatorId != userInfo.Id)
             {
                 throw new Exception("You may not Delort this.");

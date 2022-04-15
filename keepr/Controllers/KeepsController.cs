@@ -35,6 +35,20 @@ namespace keepr.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public ActionResult<Keep> GetKeepById(int id)
+        {
+            try
+            {
+                Keep keep = _ks.GetKeepById(id);
+                return Ok(keep);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Keep>> CreateKeep([FromBody] Keep keepData)
@@ -55,12 +69,13 @@ namespace keepr.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public ActionResult<Keep> EditKeep([FromBody] Keep editedKeep, int id)
+        public async Task<ActionResult<Keep>> EditKeep([FromBody] Keep editedKeep, int id)
         {
             try
             {
+                Account userInfo = await HttpContext.GetUserInfoAsync<Account>();
                 editedKeep.Id = id;
-                Keep keep = _ks.EditKeep(editedKeep);
+                Keep keep = _ks.EditKeep(editedKeep, userInfo);
                 return Ok(keep);
             }
             catch (Exception e)
