@@ -42,7 +42,8 @@ namespace keepr.Repositories
 
         internal Keep GetKeepById(int id)
         {
-            string sql = @"SELECT
+            string sql = @"
+            SELECT
             *
             FROM keeps
             WHERE id = @id;";
