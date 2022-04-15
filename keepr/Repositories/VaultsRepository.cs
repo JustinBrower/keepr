@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Dapper;
 using keepr.Models;
 
@@ -18,10 +20,18 @@ namespace keepr.Repositories
         {
             string sql = @"
             SELECT
-            *
-            FROM vaults
-            WHERE id = @id;";
-            return _db.QueryFirstOrDefault<Vault>(sql, new { id });
+            v.*,
+            a.*
+            FROM vaults v
+            JOIN accounts a ON v.creatorId = a.id
+            WHERE v.id = @id;
+            ";
+            return _db.Query<Vault, Account, Vault>(sql, (vault, acc) =>
+            {
+                vault.Creator = acc;
+                return vault;
+            },
+            new { id }).FirstOrDefault();
         }
 
         internal Vault CreateVault(Vault vaultData)
@@ -63,6 +73,16 @@ namespace keepr.Repositories
                 return "delorted";
             }
             throw new Exception("Could Not Delort");
+        }
+
+        internal List<Vault> GetMyVaults(string id)
+        {
+            string sql = @"
+            SELECT
+            *
+            FROM vaults
+            WHERE vaults.creatorId = @id;";
+            return _db.Query<Vault>(sql, new { id }).ToList();
         }
     }
 }

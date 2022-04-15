@@ -13,14 +13,16 @@ CREATE TABLE IF NOT EXISTS keeps(
   description VARCHAR(255) NOT NULL,
   img VARCHAR(255),
   views INT NOT NULL,
-  kept INT NOT NULL
+  kept INT NOT NULL,
+  FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE
 ) default charset utf8 COMMENT '';
 CREATE TABLE IF NOT EXISTS vaults(
   id INT AUTO_INCREMENT PRIMARY KEY,
   creatorId varchar(255) NOT NULL,
   name VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL,
-  isPrivate BIT DEFAULT 0
+  isPrivate BIT DEFAULT 0,
+  FOREIGN KEY (creatorId) REFERENCES accounts(id) ON DELETE CASCADE
 ) default charset utf8 COMMENT '';
 CREATE TABLE IF NOT EXISTS vaultKeeps(
   id INT AUTO_INCREMENT PRIMARY KEY,

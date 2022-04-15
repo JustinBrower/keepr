@@ -44,14 +44,12 @@ namespace keepr.Services
 
         internal Keep GetKeepById(int id)
         {
-            // try
-            // {
-            return _kr.GetKeepById(id);
-            // }
-            // catch (Exception e)
-            // {
-            //     return BadRequest(e.Message);
-            // }
+            Keep keep = _kr.GetKeepById(id);
+            if (keep == null)
+            {
+                throw new Exception("Nothing found");
+            }
+            return keep;
         }
 
         internal string RemoveKeep(int id, Account userInfo)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using keepr.Models;
 using keepr.Repositories;
 
@@ -28,7 +29,7 @@ namespace keepr.Services
 
 
             Vault original = GetVaultById(editedVault.Id);
-            if (editedVault.CreatorId != userInfo.Id)
+            if (original.CreatorId != userInfo.Id)
             {
                 throw new Exception("You aren't allowed to edit this");
             }
@@ -38,6 +39,11 @@ namespace keepr.Services
             original.IsPrivate = editedVault.IsPrivate != editedVault.IsPrivate ? editedVault.IsPrivate : original.IsPrivate;
             _vr.EditVault(original);
             return original;
+        }
+
+        internal List<Vault> GetMyVaults(string id)
+        {
+            return _vr.GetMyVaults(id);
         }
 
         internal string RemoveVault(int id, Account userInfo)

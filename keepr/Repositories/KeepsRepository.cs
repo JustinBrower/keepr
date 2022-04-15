@@ -15,7 +15,6 @@ namespace keepr.Repositories
         {
             _db = db;
         }
-        // FIXME NEED TO POPULATE CREATOR ON ALL THE THINGS
 
         internal Keep CreateKeep(Keep keepData)
         {
@@ -30,24 +29,45 @@ namespace keepr.Repositories
             keepData.Id = id;
             return keepData;
         }
+
+        internal List<Keep> GetKeepsByVaultIdNow(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         internal List<Keep> GetAllKeeps()
         {
             string sql = @"
             SELECT
-            *
-            FROM keeps
+            k.*,
+            a.*
+            FROM keeps k
+            JOIN accounts a ON k.creatorId = a.id;
             ";
-            return _db.Query<Keep>(sql).ToList();
+            return _db.Query<Keep, Account, Keep>(sql, (keep, acc) =>
+            {
+                keep.Creator = acc;
+                return keep;
+            }
+            ).ToList();
         }
 
         internal Keep GetKeepById(int id)
         {
             string sql = @"
             SELECT
-            *
-            FROM keeps
-            WHERE id = @id;";
-            return _db.QueryFirstOrDefault<Keep>(sql, new { id });
+            k.*,
+            a.*
+            FROM keeps k
+            JOIN accounts a ON k.creatorId = a.id
+            WHERE k.id = @id;
+            ";
+            return _db.Query<Keep, Account, Keep>(sql, (keep, acc) =>
+            {
+                keep.Creator = acc;
+                return keep;
+            },
+            new { id }).FirstOrDefault();
         }
 
         internal void EditKeep(Keep original)
