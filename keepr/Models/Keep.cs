@@ -10,6 +10,6 @@ namespace keepr.Models
         public int Kept { get; set; }
         public string CreatorId { get; set; }
 
-        // TODO ADD CREATOR
+        public Account Creator { get; set; }
     }
 }
