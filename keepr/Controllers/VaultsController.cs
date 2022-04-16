@@ -108,7 +108,7 @@ namespace keepr.Controllers
                 {
                     return BadRequest("This Vault is private.");
                 }
-                List<Keep> keeps = _vks.GetKeepsByVaultId(id);
+                List<VaultKeepViewModel> keeps = _vks.GetKeepsByVaultId(id);
                 return Ok(keeps);
             }
             catch (Exception e)

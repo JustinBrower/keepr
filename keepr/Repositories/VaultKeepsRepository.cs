@@ -16,17 +16,24 @@ namespace keepr.Repositories
             _db = db;
         }
 
-        internal List<Keep> GetKeepsByVaultId(int id)
+        internal List<VaultKeepViewModel> GetKeepsByVaultId(int id)
         {
+            // FIXME DOESN'T COMPLETELY WORK, DOESN'T RETURN FULL KEEP OBJECT
             string sql = @"
             SELECT
             k.*,
-            vk.*
-            FROM keeps k
-            JOIN vaultKeeps vk ON vk.keepId = k.id
-            WHERE vaultKeeps.vaultId = @id;
+            vk.*,
+            vk.id AS VaultKeepId
+            FROM vaultKeeps vk
+            JOIN keeps k ON k.id = vk.keepId
+            WHERE vk.vaultId = @id;
             ";
-            return _db.Query<Keep>(sql, new { id }).ToList();
+            return _db.Query<Account, VaultKeepViewModel, VaultKeepViewModel>(sql, (acc, keep) =>
+            {
+                keep.Creator = acc;
+                return keep;
+            },
+             new { id }).ToList();
         }
 
         internal VaultKeep CreateVaultKeeps(VaultKeep vaultKeepData)

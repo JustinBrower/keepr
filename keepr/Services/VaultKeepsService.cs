@@ -18,7 +18,7 @@ namespace keepr.Services
             _kr = kr;
         }
 
-        internal List<Keep> GetKeepsByVaultId(int id)
+        internal List<VaultKeepViewModel> GetKeepsByVaultId(int id)
         {
             return _vkr.GetKeepsByVaultId(id);
         }
