@@ -20,8 +20,10 @@ namespace keepr.Repositories
         {
             string sql = @"
             SELECT
-            *
-            FROM vaultKeeps
+            k.*,
+            vk.*
+            FROM keeps k
+            JOIN vaultKeeps vk ON vk.keepId = k.id
             WHERE vaultKeeps.vaultId = @id;
             ";
             return _db.Query<Keep>(sql, new { id }).ToList();

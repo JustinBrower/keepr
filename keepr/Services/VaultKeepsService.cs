@@ -20,7 +20,7 @@ namespace keepr.Services
 
         internal List<Keep> GetKeepsByVaultId(int id)
         {
-            return _kr.GetKeepsByVaultIdNow(id);
+            return _vkr.GetKeepsByVaultId(id);
         }
 
         internal VaultKeep CreateVaultKeep(VaultKeep vaultKeepData)
