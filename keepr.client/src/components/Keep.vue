@@ -37,7 +37,8 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <button class="btn btn-warning">Add To Vault</button>
+          <!-- FIXME THIS ACC CHECK DOESN'T WORK -->
+          <button v-if="account" class="btn btn-warning">Add To Vault</button>
         </div>
       </div>
     </template>
@@ -46,15 +47,19 @@
 
 
 <script>
+import { computed } from '@vue/reactivity'
+import { AppState } from '../AppState'
 export default {
   props: {
     keep: {
       typeof: Object,
       required: true
+    },
+    setup() {
+      return {
+        account: computed(() => AppState.account)
+      }
     }
-  },
-  setup() {
-    return {}
   }
 }
 </script>
