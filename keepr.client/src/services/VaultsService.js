@@ -1,4 +1,5 @@
 import { AppState } from "../AppState"
+import { logger } from "../utils/Logger"
 import { api } from "./AxiosService"
 
 
@@ -12,6 +13,13 @@ class VaultsService {
     async getMyVaults() {
         const res = await api.get("account/vaults")
         AppState.vaults = res.data
+    }
+
+    async getThisUsersVaults(id) {
+        const res = await api.get("api/profiles/" + id + "/vaults")
+        AppState.vaults = res.data
+        logger.log("vaults are...", res.data)
+
     }
 
     async getVaultById(id) {

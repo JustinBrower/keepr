@@ -10,7 +10,12 @@
     <p class="keepText">{{ keep.name }}</p>
     <div>
       <router-link :to="{ name: 'Profile', params: { id: keep.creatorId } }">
-        <img class="mini-pic hoverable" :src="keep.creator.picture" alt="" />
+        <img
+          v-if="keep.creator"
+          class="mini-pic hoverable"
+          :src="keep.creator.picture"
+          alt=""
+        />
       </router-link>
     </div>
   </div>
