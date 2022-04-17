@@ -18,14 +18,14 @@ namespace keepr.Repositories
 
         internal List<VaultKeepViewModel> GetKeepsByVaultId(int id)
         {
-            // FIXME DOESN'T COMPLETELY WORK, DOESN'T RETURN FULL KEEP OBJECT
             string sql = @"
             SELECT
+            a.*,
             k.*,
-            vk.*,
             vk.id AS VaultKeepId
             FROM vaultKeeps vk
             JOIN keeps k ON k.id = vk.keepId
+            JOIN accounts a ON a.id = k.creatorId
             WHERE vk.vaultId = @id;
             ";
             return _db.Query<Account, VaultKeepViewModel, VaultKeepViewModel>(sql, (acc, keep) =>
