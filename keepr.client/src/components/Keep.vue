@@ -37,8 +37,19 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <!-- FIXME THIS ACC CHECK DOESN'T WORK -->
-          <!-- <button v-if="account" class="btn btn-warning">Add To Vault</button> -->
+          <form>
+            <div>
+              <label class="form-label me-2">Choose Vault:</label>
+              <select required class="px-2" v-model="editable.vaultId">
+                <option v-for="v in vaults" :key="v.id">
+                  <a class="dropdown-item" href="#">{{ v.name }}</a>
+                </option>
+              </select>
+            </div>
+            <button @click="addToVault" class="btn btn-warning">
+              Add To Vault
+            </button>
+          </form>
         </div>
       </div>
     </template>
@@ -47,18 +58,42 @@
 
 
 <script>
-import { computed } from '@vue/reactivity'
+import { computed, ref } from '@vue/reactivity'
 import { AppState } from '../AppState'
-import { watchEffect } from '@vue/runtime-core'
+import { onMounted } from '@vue/runtime-core'
+import { vaultsService } from '../services/VaultsService'
+import { logger } from '../utils/Logger'
+import Pop from '../utils/Pop'
+import { vaultKeepsService } from '../services/VaultKeepsService'
 export default {
   props: {
     keep: {
       typeof: Object,
       required: true
     },
-    setup() {
+    setup(props) {
+      const editable = ref({})
+      onMounted(() => {
+        try {
+          vaultsService.getMyVaults()
+        } catch (error) {
+          logger.error(error)
+          Pop.toast(error.message, 'error')
+        }
+      })
       return {
-        account: computed(() => AppState.account)
+        editable,
+        async addtoVault() {
+          try {
+            editable.value.keepId = props.keep.id
+            vaultKeepsService.createVaultKeep(editable.value)
+          } catch (error) {
+            logger.error(error)
+            Pop.toast(error.message, 'error')
+          }
+        },
+        account: computed(() => AppState.account),
+        vaults: computed(() => AppState.vaults)
       }
     }
   }
@@ -73,6 +108,7 @@ export default {
   width: auto;
   padding: 1rem;
 }
+
 // .keepModalImg {
 //   max-height: 50vh;
 //   width: auto;
@@ -88,6 +124,7 @@ export default {
 .hoverable:hover {
   cursor: pointer;
 }
+
 .mini-pic {
   width: 30px;
   height: 30px;
