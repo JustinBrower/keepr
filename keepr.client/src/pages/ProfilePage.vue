@@ -16,7 +16,7 @@
         <button
           data-bs-toggle="modal"
           data-bs-target="#addVault"
-          v-if="(account.id = profile.id)"
+          v-if="account.id == profile.id"
           class="btn btn-success"
         >
           Add Vault
