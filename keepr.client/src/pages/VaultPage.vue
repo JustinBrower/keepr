@@ -5,12 +5,12 @@
         <h1>Keepr</h1>
         <h2>
           {{ vault.name }}
-
           <button @click="deleteVault" class="btn btn-danger">Delete</button>
         </h2>
       </div>
-      <div class="row">
-        <div class="col-2" v-for="k in keeps" :key="k.id">
+      <h2>Keeps</h2>
+      <div class="masonry-with-columns">
+        <div v-for="k in keeps" :key="k.id">
           <Keep :keep="k" />
         </div>
       </div>
@@ -32,10 +32,10 @@ export default {
   name: 'Vault',
   setup() {
     const route = useRoute();
-    onMounted(() => {
+    onMounted(async () => {
       try {
-        vaultKeepsService.getTheseVaultKeeps(route.params.id)
-        vaultsService.getVaultById(route.params.id)
+        await vaultKeepsService.getTheseVaultKeeps(route.params.id)
+        await vaultsService.getVaultById(route.params.id)
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')
@@ -45,7 +45,7 @@ export default {
       async deleteVault() {
         try {
           if (await Pop.confirm()) {
-            vaultsService.deleteVault(route.params.id)
+            await vaultsService.deleteVault(route.params.id)
             router.push({ name: 'Home' })
             Pop.toast('Vault Delorted', 'success')
           }
@@ -63,4 +63,12 @@ export default {
 
 
 <style lang="scss" scoped>
+.masonry-with-columns {
+  columns: 6 200px;
+  column-gap: 1rem;
+  div {
+    display: inline-block;
+    width: 100%;
+  }
+}
 </style>

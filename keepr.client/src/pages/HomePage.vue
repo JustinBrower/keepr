@@ -5,8 +5,8 @@
         <h1>Keepr</h1>
       </div>
     </div>
-    <div class="row">
-      <div class="col-2" v-for="k in keeps" :key="k.id">
+    <div class="masonry-with-columns">
+      <div v-for="k in keeps" :key="k.id">
         <Keep :keep="k" />
       </div>
     </div>
@@ -53,6 +53,15 @@ export default {
       object-fit: contain;
       object-position: center;
     }
+  }
+}
+
+.masonry-with-columns {
+  columns: 6 200px;
+  column-gap: 1rem;
+  div {
+    display: inline-block;
+    width: 100%;
   }
 }
 </style>

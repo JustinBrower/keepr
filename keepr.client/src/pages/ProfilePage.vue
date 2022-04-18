@@ -35,14 +35,14 @@
           data-bs-toggle="modal"
           data-bs-target="#addKeep"
           v-if="(account.id = profile.id)"
-          class="btn btn-success"
+          class="btn btn-success mb-3"
         >
           Add Keep
         </button>
       </div>
     </div>
-    <div class="row">
-      <div class="col-2" v-for="k in keeps" :key="k.id">
+    <div class="masonry-with-columns">
+      <div v-for="k in keeps" :key="k.id">
         <Keep :keep="k" />
       </div>
     </div>
@@ -163,11 +163,17 @@ export default {
   setup() {
     const route = useRoute();
     const editable = ref({})
-    onMounted(() => {
+    const account = AppState.account
+    onMounted(async () => {
       try {
-        profilesService.getProfileById(route.params.id)
-        keepsService.getThisUsersKeeps(route.params.id)
-        vaultsService.getThisUsersVaults(route.params.id)
+        await profilesService.getProfileById(route.params.id)
+        logger.log('profile is...', AppState.activeProfile)
+        await keepsService.getThisUsersKeeps(route.params.id)
+        logger.log('keeps are...', AppState.keeps)
+        await vaultsService.getThisUsersVaults(route.params.id)
+        if (account.id == route.params.id) {
+          await vaultsService.getMyVaults()
+        }
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')
@@ -178,7 +184,7 @@ export default {
       async addKeep() {
         try {
           Modal.getOrCreateInstance(document.getElementById('addKeep')).hide()
-          keepsService.createKeep(editable.value)
+          await keepsService.createKeep(editable.value)
         } catch (error) {
           logger.error(error)
           Pop.toast(error.message, 'error')
@@ -193,7 +199,7 @@ export default {
           }
           logger.log(editable.value)
           Modal.getOrCreateInstance(document.getElementById('addVault')).hide()
-          vaultsService.createVault(editable.value)
+          await vaultsService.createVault(editable.value)
         } catch (error) {
           logger.error(error)
           Pop.toast(error.message, 'error')
@@ -209,5 +215,15 @@ export default {
 </script>
 
 
+
+
 <style lang="scss" scoped>
+.masonry-with-columns {
+  columns: 6 200px;
+  column-gap: 1rem;
+  div {
+    display: inline-block;
+    width: 100%;
+  }
+}
 </style>
