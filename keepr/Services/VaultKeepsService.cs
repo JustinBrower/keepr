@@ -10,12 +10,14 @@ namespace keepr.Services
         private readonly VaultKeepsRepository _vkr;
         private readonly VaultsRepository _vr;
         private readonly KeepsRepository _kr;
+        private readonly KeepsService _ks;
 
-        public VaultKeepsService(VaultKeepsRepository vkr, VaultsRepository vr, KeepsRepository kr)
+        public VaultKeepsService(VaultKeepsRepository vkr, VaultsRepository vr, KeepsRepository kr, KeepsService ks)
         {
             _vkr = vkr;
             _vr = vr;
             _kr = kr;
+            _ks = ks;
         }
 
         internal List<VaultKeepViewModel> GetKeepsByVaultId(int id)
@@ -30,6 +32,7 @@ namespace keepr.Services
             {
                 throw new Exception("Not yours");
             }
+            _ks.AddKept(vaultKeepData.KeepId);
             return _vkr.CreateVaultKeeps(vaultKeepData);
         }
 

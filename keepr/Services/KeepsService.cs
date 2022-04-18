@@ -48,7 +48,17 @@ namespace keepr.Services
             {
                 throw new Exception("Nothing found");
             }
+            keep.Views++;
+            _kr.EditKeep(keep);
             return keep;
+        }
+
+        internal string AddKept(int id)
+        {
+            Keep keep = _kr.GetKeepById(id);
+            keep.Kept++;
+            _kr.EditKeep(keep);
+            return "updated";
         }
 
         internal string RemoveKeep(int id, Account userInfo)

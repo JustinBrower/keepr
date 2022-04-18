@@ -34,7 +34,11 @@
             <div class="col-4">
               <p>Keeps: {{ keep.kept }}</p>
             </div>
-            <p>{{ keep.description }}</p>
+            <div class="row">
+              <div class="col-5 d-flex justify-content-center">
+                <p>{{ keep.description }}</p>
+              </div>
+            </div>
           </div>
           <div></div>
         </div>
@@ -161,6 +165,7 @@ export default {
 
 .keepModalImg {
   max-height: 512px;
+  max-width: 512px;
   width: auto;
 }
 

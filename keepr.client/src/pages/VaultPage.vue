@@ -8,12 +8,12 @@
           <button @click="deleteVault" class="btn btn-danger">Delete</button>
         </h2>
       </div>
-      <h2>Keeps</h2>
-      <div class="masonry-with-columns">
-        <div v-for="k in keeps" :key="k.id">
-          <Keep :keep="k" />
-        </div>
-      </div>
+    </div>
+    <h2>Keeps</h2>
+  </div>
+  <div class="masonry-with-columns">
+    <div v-for="k in keeps" :key="k.id">
+      <Keep :keep="k" />
     </div>
   </div>
 </template>

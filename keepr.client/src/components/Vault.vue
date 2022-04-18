@@ -5,7 +5,6 @@
         <div class="mt-3">
           <h3 class="d-flex">
             {{ vault.name }}
-            <p>private/notmine</p>
             <p class="mdi mdi-lock"></p>
           </h3>
         </div>
@@ -16,7 +15,6 @@
         <div class="mt-3">
           <h3 class="d-flex">
             {{ vault.name }}
-            <p>private and mine</p>
             <p class="mdi mdi-lock"></p>
           </h3>
         </div>
@@ -27,7 +25,6 @@
         <div class="mt-3">
           <h3>
             {{ vault.name }}
-            <p>notprivate</p>
           </h3>
         </div>
       </router-link>

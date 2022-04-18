@@ -36,12 +36,7 @@ class KeepsService {
     }
 
     async addView(id) {
-        logger.log("id is..", id)
         const res = await api.get("api/keeps/" + id)
-        logger.log("Views now...", res.data.views)
-
-        AppState.keeps = AppState.keeps.filter(k => k.id != id)
-        AppState.keeps = [...AppState.keeps, res.data]
     }
 
     async deleteKeep(id) {
