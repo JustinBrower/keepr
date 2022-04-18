@@ -1,7 +1,9 @@
 <template>
-  <router-link :to="{ name: 'Vault', params: { id: vault.id } }">
-    <div>{{ vault.name }}</div>
-  </router-link>
+  <div>
+    <router-link :to="{ name: 'Vault', params: { id: vault.id } }">
+      <div>{{ vault.name }}</div>
+    </router-link>
+  </div>
 </template>
 
 
