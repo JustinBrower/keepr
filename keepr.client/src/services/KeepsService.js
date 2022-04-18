@@ -1,4 +1,5 @@
 import { AppState } from "../AppState"
+import { logger } from "../utils/Logger"
 import { api } from "./AxiosService"
 
 
@@ -29,6 +30,15 @@ class KeepsService {
 
     async editKeep(id, body) {
         const res = await api.put("api/keeps/" + id, body)
+
+        AppState.keeps = AppState.keeps.filter(k => k.id != id)
+        AppState.keeps = [...AppState.keeps, res.data]
+    }
+
+    async addView(id) {
+        logger.log("id is..", id)
+        const res = await api.get("api/keeps/" + id)
+        logger.log("Views now...", res.data.views)
 
         AppState.keeps = AppState.keeps.filter(k => k.id != id)
         AppState.keeps = [...AppState.keeps, res.data]

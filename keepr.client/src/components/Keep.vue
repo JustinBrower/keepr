@@ -1,25 +1,24 @@
 <template>
   <div class="card bg-dark text-white">
     <img class="card-img" :src="keep.img" alt="keep_img" />
-    <div
-      data-bs-toggle="modal"
-      :data-bs-target="'#keep' + keep.id"
-      class="card-img-overlay hoverable"
-    >
+    <div @click="openModal" class="card-img-overlay hoverable">
       <h5 class="card-title weight">
         {{ keep.name }}
       </h5>
       <p class="card-text weight">{{ keep.description }}</p>
-      <p class="card-text">
-        <router-link :to="{ name: 'Profile', params: { id: keep.creatorId } }">
-          <img
-            v-if="keep.creator"
-            class="mini-pic hoverable"
-            :src="keep.creator.picture"
-            alt="p_pic"
-          />
-        </router-link>
-      </p>
+      <p class="card-text"></p>
+      <div
+        @click.stop="goTo('Profile', keep.creatorId)"
+        class="d-flex align-items-end"
+        style="height: 20px; width: 10px"
+      >
+        <img
+          v-if="keep.creator"
+          class="mini-pic hoverable"
+          :src="keep.creator.picture"
+          alt="p_pic"
+        />
+      </div>
     </div>
   </div>
 
@@ -28,9 +27,16 @@
     <template #body>
       <div class="row">
         <div class="col-6 d-flex justify-content-start">
-          <div>
+          <div class="row" style="height: 20px">
+            <div class="col-4">
+              <p>Views: {{ keep.views }}</p>
+            </div>
+            <div class="col-4">
+              <p>Keeps: {{ keep.kept }}</p>
+            </div>
             <p>{{ keep.description }}</p>
           </div>
+          <div></div>
         </div>
         <div class="col-6 d-flex justify-content-end image-fluid">
           <img
@@ -75,6 +81,7 @@ import Pop from '../utils/Pop'
 import { vaultKeepsService } from '../services/VaultKeepsService'
 import { Modal } from 'bootstrap'
 import { keepsService } from '../services/KeepsService'
+import { router } from '../router'
 export default {
   props: {
     keep: {
@@ -110,6 +117,26 @@ export default {
           if (await Pop.confirm()) {
             Modal.getOrCreateInstance(document.getElementById('keep' + props.keep.id)).hide()
             await keepsService.deleteKeep(props.keep.id)
+          }
+        } catch (error) {
+          logger.error(error)
+          Pop.toast(error.message, 'error')
+        }
+      },
+      async goTo(page, userId) {
+        try {
+          Modal.getOrCreateInstance(document.getElementById('keep' + props.keep.id)).hide()
+          router.push({ name: page, params: { id: userId } })
+        } catch (error) {
+          logger.error(error)
+          Pop.toast(error.message, 'error')
+        }
+      },
+      async openModal() {
+        try {
+          Modal.getOrCreateInstance(document.getElementById('keep' + props.keep.id)).show()
+          if (props.keep.creatorId != this.account.id) {
+            await keepsService.addView(props.keep.id)
           }
         } catch (error) {
           logger.error(error)

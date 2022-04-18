@@ -31,23 +31,37 @@ namespace keepr.Repositories
         {
             string sql = @"
             SELECT
-            *
-            FROM keeps
-            WHERE keeps.creatorId = @id;
+            k.*,
+            a.*
+            FROM keeps k
+            JOIN accounts a ON a.id = k.creatorId
+            WHERE k.creatorId = @id;
             ";
-            return _db.Query<Keep>(sql, new { id }).ToList();
+            return _db.Query<Keep, Account, Keep>(sql, (keep, account) =>
+            {
+                keep.Creator = account;
+                return keep;
+            },
+             new { id }).ToList();
         }
 
         internal List<Vault> GetVaultsByProfileId(string id)
         {
             string sql = @"
             SELECT
-            *
-            FROM vaults
-            WHERE vaults.creatorId = @id
-            AND vaults.isPrivate = 0;
+            v.*,
+            a.*
+            FROM vaults v
+            JOIN accounts a ON a.id = v.creatorId
+            WHERE v.creatorId = @id
+            AND v.isPrivate = 0;
             ";
-            return _db.Query<Vault>(sql, new { id }).ToList();
+            return _db.Query<Vault, Account, Vault>(sql, (vault, account) =>
+            {
+                vault.Creator = account;
+                return vault;
+            },
+             new { id }).ToList();
         }
     }
 }

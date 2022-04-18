@@ -35,7 +35,6 @@ namespace keepr.Services
             original.Name = editedKeep.Name != null ? editedKeep.Name : original.Name;
             original.Description = editedKeep.Description != null ? editedKeep.Description : original.Description;
             original.Img = editedKeep.Img != null ? editedKeep.Img : original.Img;
-            // FIXME CANT NULL INTS I GUESS
             original.Views = editedKeep.Views != 0 ? editedKeep.Views : original.Views;
             original.Kept = editedKeep.Kept != 0 ? editedKeep.Kept : original.Kept;
             _kr.EditKeep(original);

@@ -34,7 +34,7 @@
         <button
           data-bs-toggle="modal"
           data-bs-target="#addKeep"
-          v-if="(account.id = profile.id)"
+          v-if="account.id == profile.id"
           class="btn btn-success mb-3"
         >
           Add Keep
@@ -150,7 +150,7 @@
 
 
 <script>
-import { computed, onMounted, ref } from '@vue/runtime-core'
+import { computed, onMounted, ref, watchEffect } from '@vue/runtime-core'
 import { logger } from '../utils/Logger'
 import Pop from '../utils/Pop'
 import { useRoute } from 'vue-router'
@@ -161,18 +161,19 @@ import { vaultsService } from '../services/VaultsService'
 import { Modal } from 'bootstrap'
 export default {
   setup() {
-    const route = useRoute();
     const editable = ref({})
-    const account = AppState.account
+    const route = useRoute();
+    watchEffect(async () => {
+      await profilesService.getProfileById(route.params.id)
+    })
     onMounted(async () => {
       try {
-        await profilesService.getProfileById(route.params.id)
-        logger.log('profile is...', AppState.activeProfile)
         await keepsService.getThisUsersKeeps(route.params.id)
         logger.log('keeps are...', AppState.keeps)
-        await vaultsService.getThisUsersVaults(route.params.id)
-        if (account.id == route.params.id) {
+        if (AppState.account.id === route.params.id) {
           await vaultsService.getMyVaults()
+        } else {
+          await vaultsService.getThisUsersVaults(route.params.id)
         }
       } catch (error) {
         logger.error(error)

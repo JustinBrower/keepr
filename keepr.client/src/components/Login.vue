@@ -29,11 +29,12 @@
         class="dropdown-menu p-0 list-group w-100"
         aria-labelledby="authDropdown"
       >
-        <router-link :to="{ name: 'Profile', params: { id: account.id } }">
-          <div class="list-group-item list-group-item-action hoverable">
-            My Profile
-          </div>
-        </router-link>
+        <div
+          @click="goTo"
+          class="list-group-item list-group-item-action hoverable"
+        >
+          My Profile
+        </div>
         <div
           class="list-group-item list-group-item-action hoverable text-danger"
           @click="logout"
@@ -51,9 +52,20 @@
 import { computed } from "@vue/reactivity";
 import { AppState } from "../AppState";
 import { AuthService } from "../services/AuthService";
+import { logger } from '../utils/Logger';
+import Pop from '../utils/Pop';
+import { router } from '../router';
 export default {
   setup() {
     return {
+      async goTo() {
+        try {
+          router.push({ name: 'Profile', params: { id: this.account.id } })
+        } catch (error) {
+          logger.error(error)
+          Pop.toast(error.message, 'error')
+        }
+      },
       user: computed(() => AppState.user),
       account: computed(() => AppState.account),
       async login() {
