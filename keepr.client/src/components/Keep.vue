@@ -68,6 +68,13 @@
           >
             Delete
           </button>
+          <button
+            v-if="route.name == 'Vault' && profile.id == account.id"
+            @click="deleteVaultKeep"
+            class="btn btn-danger ms-3"
+          >
+            Remove From Vault
+          </button>
         </div>
       </div>
     </template>
@@ -86,15 +93,17 @@ import { vaultKeepsService } from '../services/VaultKeepsService'
 import { Modal } from 'bootstrap'
 import { keepsService } from '../services/KeepsService'
 import { router } from '../router'
+import { useRoute } from 'vue-router'
 export default {
   props: {
     keep: {
       typeof: Object,
       required: true
-    }
+    },
   },
   setup(props) {
     const editable = ref({})
+    const route = useRoute();
     onMounted(async () => {
       try {
         await vaultsService.getMyVaults()
@@ -105,6 +114,7 @@ export default {
     })
     return {
       editable,
+      route,
       async addToVault() {
         try {
           Modal.getOrCreateInstance(document.getElementById('keep' + props.keep.id)).hide()
@@ -147,8 +157,20 @@ export default {
           Pop.toast(error.message, 'error')
         }
       },
+      async deleteVaultKeep() {
+        try {
+          if (await Pop.confirm()) {
+            await vaultKeepsService.deleteVaultKeep(props.keep.vaultKeepId)
+            Pop.toast('Removed from Vault', 'success')
+          }
+        } catch (error) {
+          logger.error(error)
+          Pop.toast(error.message, 'error')
+        }
+      },
       account: computed(() => AppState.account),
-      vaults: computed(() => AppState.vaults)
+      vaults: computed(() => AppState.vaults),
+      profile: computed(() => AppState.activeProfile)
     }
   }
 }

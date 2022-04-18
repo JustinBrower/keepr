@@ -28,14 +28,18 @@ import { useRoute } from 'vue-router'
 import { AppState } from '../AppState'
 import { vaultsService } from '../services/VaultsService'
 import { router } from '../router'
+import { profilesService } from '../services/ProfilesService'
 export default {
   name: 'Vault',
   setup() {
     const route = useRoute();
     onMounted(async () => {
+      AppState.keeps = []
+      AppState.vaults = []
       try {
         await vaultKeepsService.getTheseVaultKeeps(route.params.id)
         await vaultsService.getVaultById(route.params.id)
+        await profilesService.getProfileById(AppState.activeVault.creatorId)
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')

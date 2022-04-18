@@ -168,13 +168,15 @@ export default {
     })
     onMounted(async () => {
       try {
-        await keepsService.getThisUsersKeeps(route.params.id)
-        logger.log('keeps are...', AppState.keeps)
-        if (AppState.account.id === route.params.id) {
+        await profilesService.getProfileById(route.params.id)
+        if (AppState.account.id === AppState.activeProfile.id) {
           await vaultsService.getMyVaults()
+          logger.log("getting my vaults")
         } else {
-          await vaultsService.getThisUsersVaults(route.params.id)
+          await vaultsService.getThisUsersVaults(AppState.activeProfile.id)
+          logger.log("getting someone elses vaults")
         }
+        await keepsService.getThisUsersKeeps(route.params.id)
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')
