@@ -18,7 +18,7 @@
     <h2>Keeps</h2>
   </div>
   <div class="masonry-with-columns">
-    <div v-for="k in keeps" :key="k.id">
+    <div class="ps-1" v-for="k in keeps" :key="k.id">
       <Keep :keep="k" />
     </div>
   </div>
@@ -40,8 +40,6 @@ export default {
   setup() {
     const route = useRoute();
     onMounted(async () => {
-      AppState.keeps = []
-      AppState.vaults = []
       try {
         await vaultKeepsService.getTheseVaultKeeps(route.params.id)
         await vaultsService.getVaultById(route.params.id)
@@ -64,7 +62,7 @@ export default {
           Pop.toast(error.message, 'error')
         }
       },
-      keeps: computed(() => AppState.keeps),
+      keeps: computed(() => AppState.vaultKeeps),
       vault: computed(() => AppState.activeVault),
       account: computed(() => AppState.account)
     }

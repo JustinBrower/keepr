@@ -1,4 +1,5 @@
 import { AppState } from "../AppState"
+import { logger } from "../utils/Logger"
 import { api } from "./AxiosService"
 
 
@@ -7,17 +8,17 @@ class VaultKeepsService {
 
     async createVaultKeep(body) {
         const res = await api.post("api/vaultkeeps/", body)
-        AppState.vaultKeeps = [...AppState.vaultKeeps, res.data]
     }
     async getTheseVaultKeeps(id) {
-        AppState.keeps = []
+        logger.log("id used to get vaultkeeps...", id)
         const res = await api.get("api/vaults/" + id + "/keeps")
-        AppState.keeps = res.data
+        logger.log("vaulkeeps are...", res.data)
+        AppState.vaultKeeps = res.data
     }
 
     async deleteVaultKeep(id) {
         await api.delete("api/vaultkeeps/" + id)
-        AppState.vaults = AppState.vaults.filter(k => k.id == id)
+        AppState.vaultKeeps = AppState.vaultKeeps.filter(k => k.id != id)
     }
 }
 

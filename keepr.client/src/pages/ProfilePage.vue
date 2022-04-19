@@ -10,7 +10,6 @@
       <div class="col-6"></div>
     </div>
     <div class="row mt-5 pt-5"></div>
-    <button class="btn btn-info" @click="loggIt">Logger</button>
     <div class="row">
       <h2>Vaults</h2>
       <div>
@@ -165,18 +164,12 @@ export default {
     const editable = ref({})
     const route = useRoute();
     watchEffect(async () => {
-      await profilesService.getProfileById(route.params.id)
       AppState.account
-      AppState.activeProfile
-      AppState.vaults
-    })
-    onMounted(async () => {
-      AppState.keeps = []
-      AppState.vaults = []
       try {
         await profilesService.getProfileById(route.params.id)
-        logger.log("Active profile is...", AppState.activeProfile)
-        logger.log("Account is...", AppState.account)
+        logger.log('account...', AppState.account)
+        logger.log("Profile...", AppState.activeProfile)
+
         if (AppState.account.id != AppState.activeProfile.id) {
           logger.log("getting another user's vaults...")
           await vaultsService.getThisUsersVaults(AppState.activeProfile.id)
@@ -186,7 +179,6 @@ export default {
           await vaultsService.getMyVaults()
           AppState.vaults = AppState.myVaults
         }
-        logger.log("Vaults are...", AppState.vaults)
         await keepsService.getThisUsersKeeps(route.params.id)
       } catch (error) {
         logger.error(error)
@@ -195,9 +187,6 @@ export default {
     })
     return {
       editable,
-      async loggIt() {
-        logger.log('Vaults are...', AppState.vaults)
-      },
       async addKeep() {
         try {
           Modal.getOrCreateInstance(document.getElementById('addKeep')).hide()

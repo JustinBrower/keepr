@@ -25,67 +25,77 @@
   <Modal :id="'keep' + keep.id">
     <template #title> {{ keep.name }} -- {{ keep.creator.name }} </template>
     <template #body>
-      <div class="row">
-        <div class="col-6 d-flex justify-content-start">
-          <div class="row" style="height: 20px">
-            <div class="col-4">
-              <p>Views: {{ keep.views }}</p>
+      <div class="container-fluid p-0">
+        <div class="row">
+          <div class="col-6">
+            <div class="row" style="height: 20px">
+              <div class="col-6">
+                <p>Views: {{ keep.views }}</p>
+              </div>
+              <div class="col-6">
+                <p>Keeps: {{ keep.kept }}</p>
+              </div>
             </div>
-            <div class="col-4">
-              <p>Keeps: {{ keep.kept }}</p>
+            <div class="row mt-3">
+              <div
+                class="col-12 d-flex justify-content-start"
+                style="border-top: 2px solid black"
+              >
+                <p class="mt-1 keepText">{{ keep.description }}</p>
+              </div>
             </div>
-            <div class="row">
-              <div class="col-5 d-flex justify-content-center">
-                <p>{{ keep.description }}</p>
+            <div
+              class="row align-items-end"
+              style="min-height: 45vh; max-height: 80%"
+              v-if="user.isAuthenticated"
+            >
+              <div>
+                <form @submit.prevent="addToVault">
+                  <label v-if="vaults.length > 0" class="form-label"
+                    >Choose Vault:</label
+                  >
+                  <div v-if="vaults.length > 0">
+                    <select required class="px-2" v-model="editable.vaultId">
+                      <option v-for="v in vaults" :key="v.id" :value="v.id">
+                        <a class="dropdown-item" href="#">{{ v.name }}</a>
+                      </option>
+                    </select>
+                  </div>
+                  <div v-if="vaults.length == 0">
+                    <p>Please create a vault to use this feature</p>
+                  </div>
+                  <button v-if="vaults.length > 0" class="btn btn-primary mt-3">
+                    KeepIt
+                  </button>
+                  <button
+                    type="button"
+                    v-if="account.id == keep.creatorId"
+                    @click="removeKeep"
+                    class="btn btn-danger mt-3 ms-1"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    v-if="route.name == 'Vault' && profile.id == account.id"
+                    @click="deleteVaultKeep"
+                    class="btn btn-warning mt-3 ms-1"
+                  >
+                    UnKeep
+                  </button>
+                </form>
               </div>
             </div>
           </div>
-          <div></div>
-        </div>
-        <div class="col-6 d-flex justify-content-end image-fluid">
-          <img
-            class="keepModalImg image-fluid"
-            :src="keep.img"
-            alt="keep_img"
-          />
-        </div>
-      </div>
-      <div class="row mt-3" v-if="user.isAuthenticated">
-        <div class="col-12 d-flex">
-          <form @submit.prevent="addToVault">
-            <label v-if="vaults.length > 0" class="form-label me-2"
-              >Choose Vault:</label
-            >
-            <div v-if="vaults.length > 0">
-              <select required class="px-2" v-model="editable.vaultId">
-                <option v-for="v in vaults" :key="v.id" :value="v.id">
-                  <a class="dropdown-item" href="#">{{ v.name }}</a>
-                </option>
-              </select>
-            </div>
-            <div v-if="vaults.length == 0">
-              <p>Please create a vault to use this feature</p>
-            </div>
-            <div v-if="vaults.length > 0">
-              <button class="btn btn-warning ms-3 mt-3">Add To Vault</button>
-            </div>
-          </form>
-          <div>
-            <button
-              v-if="account.id == keep.creatorId"
-              @click="removeKeep"
-              class="btn btn-danger ms-4 justify-content-end"
-            >
-              Delete
-            </button>
+
+          <!-- IMAGE START -->
+          <div class="col-6 d-flex justify-content-end">
+            <img
+              class="keepModalImg shadow rounded"
+              :src="keep.img"
+              alt="keep_img"
+            />
           </div>
-          <button
-            v-if="route.name == 'Vault' && profile.id == account.id"
-            @click="deleteVaultKeep"
-            class="btn btn-danger ms-3"
-          >
-            Remove From Vault
-          </button>
         </div>
       </div>
     </template>
@@ -144,6 +154,7 @@ export default {
           if (await Pop.confirm()) {
             Modal.getOrCreateInstance(document.getElementById('keep' + props.keep.id)).hide()
             await keepsService.deleteKeep(props.keep.id)
+            Pop.toast("Keep Delorted", 'success')
           }
         } catch (error) {
           logger.error(error)
@@ -173,6 +184,7 @@ export default {
       async deleteVaultKeep() {
         try {
           if (await Pop.confirm()) {
+            Modal.getOrCreateInstance(document.getElementById('keep' + props.keep.id)).hide()
             await vaultKeepsService.deleteVaultKeep(props.keep.vaultKeepId)
             Pop.toast('Removed from Vault', 'success')
           }
@@ -200,13 +212,18 @@ export default {
 }
 
 .keepModalImg {
-  max-height: 512px;
-  max-width: 512px;
+  // object-fit: fill;
+  height: 100%;
+  max-width: 400px;
   width: auto;
 }
 
 .weight {
   font-weight: 800;
+}
+
+.keepText {
+  word-wrap: break-word;
 }
 
 .hoverable:hover {

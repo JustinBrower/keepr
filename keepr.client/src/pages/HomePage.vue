@@ -14,16 +14,14 @@
 </template>
 
 <script>
-import { computed, onMounted } from '@vue/runtime-core'
+import { computed, watchEffect } from '@vue/runtime-core'
 import { logger } from '../utils/Logger'
 import Pop from '../utils/Pop'
 import { keepsService } from '../services/KeepsService'
 import { AppState } from '../AppState'
 export default {
   setup() {
-    onMounted(async () => {
-      AppState.vaults = []
-      AppState.keeps = []
+    watchEffect(async () => {
       try {
         await keepsService.getAllKeeps()
       } catch (error) {
@@ -32,7 +30,7 @@ export default {
       }
     })
     return {
-      keeps: computed(() => AppState.keeps)
+      keeps: computed(() => AppState.allKeeps)
     }
   },
   name: 'Home'

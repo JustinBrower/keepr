@@ -44,6 +44,9 @@ namespace keepr.Services
             {
                 throw new Exception("You aren't allowed to Delort this");
             }
+            Keep keep = _kr.GetKeepById(vaultKeep.KeepId);
+            keep.Kept--;
+            _kr.EditKeep(keep);
             return _vkr.RemoveVaultKeep(id);
         }
     }
