@@ -1,15 +1,16 @@
 <template>
   <div class="card bg-dark text-white">
     <img class="card-img" :src="keep.img" alt="keep_img" />
-    <div @click="openModal" class="card-img-overlay hoverable">
+    <div
+      @click="openModal"
+      class="card-img-overlay hoverable d-flex align-items-end"
+    >
       <h5 class="card-title weight">
         {{ keep.name }}
       </h5>
-      <p class="card-text weight">{{ keep.description }}</p>
-      <p class="card-text"></p>
       <div
         @click.stop="goTo('Profile', keep.creatorId)"
-        class="d-flex align-items-end"
+        class="d-flex align-items-end ms-4"
         style="height: 20px; width: 10px"
       >
         <img
@@ -25,9 +26,9 @@
   <Modal :id="'keep' + keep.id">
     <template #title> {{ keep.name }} -- {{ keep.creator.name }} </template>
     <template #body>
-      <div class="container-fluid p-0">
+      <div class="container p-0">
         <div class="row">
-          <div class="col-6">
+          <div class="col-6" style="max-height: 65vh">
             <div class="row" style="height: 20px">
               <div class="col-6">
                 <p>Views: {{ keep.views }}</p>
@@ -41,14 +42,12 @@
                 class="col-12 d-flex justify-content-start"
                 style="border-top: 2px solid black"
               >
-                <p class="mt-1 keepText">{{ keep.description }}</p>
+                <p class="mt-1 keepText" style="min-height: 45vh">
+                  {{ keep.description }}
+                </p>
               </div>
             </div>
-            <div
-              class="row align-items-end"
-              style="min-height: 45vh; max-height: 80%"
-              v-if="user.isAuthenticated"
-            >
+            <div class="row" v-if="user.isAuthenticated">
               <div>
                 <form @submit.prevent="addToVault">
                   <label v-if="vaults.length > 0" class="form-label"
@@ -89,9 +88,13 @@
           </div>
 
           <!-- IMAGE START -->
-          <div class="col-6 d-flex justify-content-end">
+          <div
+            class="col-6 d-flex justify-content-center align-items-center"
+            style="max-height: 65vh"
+          >
             <img
-              class="keepModalImg shadow rounded"
+              class="keepModalImg shadow rounded img-fluid"
+              style="max-width: 60vh; max-height: 60vh"
               :src="keep.img"
               alt="keep_img"
             />
@@ -212,10 +215,7 @@ export default {
 }
 
 .keepModalImg {
-  // object-fit: fill;
-  height: 100%;
-  max-width: 400px;
-  width: auto;
+  object-fit: contain;
 }
 
 .weight {
@@ -225,7 +225,6 @@ export default {
 .keepText {
   word-wrap: break-word;
 }
-
 .hoverable:hover {
   cursor: pointer;
 }

@@ -48,6 +48,8 @@ namespace keepr.Services
             {
                 throw new Exception("Nothing found");
             }
+            keep.Views++;
+            _kr.EditKeep(keep);
             return keep;
         }
 

@@ -7,7 +7,7 @@
   </main>
   <footer>
     <div class="bg-dark text-light text-center p-4">
-      Made with 💖 by CodeWorks
+      Made with 💖 by a CodeWorks Student
     </div>
   </footer>
 </template>
@@ -26,5 +26,4 @@ export default {
 </script>
 <style lang="scss">
 @import "./assets/scss/main.scss";
-
 </style>
