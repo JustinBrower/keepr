@@ -79,10 +79,19 @@ namespace keepr.Repositories
         {
             string sql = @"
             SELECT
-            *
-            FROM vaults
-            WHERE vaults.creatorId = @id;";
-            return _db.Query<Vault>(sql, new { id }).ToList();
+            v.*,
+            a.*
+            FROM vaults v
+            JOIN accounts a ON v.creatorId = a.id
+            WHERE v.creatorId = @id;";
+            return _db.Query<Vault, Account, Vault>(sql, (vault, account) =>
+            {
+                vault.Creator = account;
+                return vault;
+            },
+             new { id }).ToList();
         }
+
+
     }
 }

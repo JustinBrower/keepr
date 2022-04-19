@@ -5,7 +5,13 @@
         <h1>Keepr</h1>
         <h2>
           {{ vault.name }}
-          <button @click="deleteVault" class="btn btn-danger">Delete</button>
+          <button
+            @click="deleteVault"
+            v-if="account?.id == vault.creatorId"
+            class="btn btn-danger"
+          >
+            Delete
+          </button>
         </h2>
       </div>
     </div>
@@ -59,7 +65,8 @@ export default {
         }
       },
       keeps: computed(() => AppState.keeps),
-      vault: computed(() => AppState.activeVault)
+      vault: computed(() => AppState.activeVault),
+      account: computed(() => AppState.account)
     }
   }
 }

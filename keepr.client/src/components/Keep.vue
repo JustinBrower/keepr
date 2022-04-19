@@ -50,24 +50,35 @@
           />
         </div>
       </div>
-      <div class="row mt-3" v-if="account">
+      <div class="row mt-3" v-if="user.isAuthenticated">
         <div class="col-12 d-flex">
           <form @submit.prevent="addToVault">
-            <label class="form-label me-2">Choose Vault:</label>
-            <select required class="px-2" v-model="editable.vaultId">
-              <option v-for="v in vaults" :key="v.id" :value="v.id">
-                <a class="dropdown-item" href="#">{{ v.name }}</a>
-              </option>
-            </select>
-            <button class="btn btn-warning ms-3">Add To Vault</button>
+            <label v-if="vaults.length > 0" class="form-label me-2"
+              >Choose Vault:</label
+            >
+            <div v-if="vaults.length > 0">
+              <select required class="px-2" v-model="editable.vaultId">
+                <option v-for="v in vaults" :key="v.id" :value="v.id">
+                  <a class="dropdown-item" href="#">{{ v.name }}</a>
+                </option>
+              </select>
+            </div>
+            <div v-if="vaults.length == 0">
+              <p>Please create a vault to use this feature</p>
+            </div>
+            <div v-if="vaults.length > 0">
+              <button class="btn btn-warning ms-3 mt-3">Add To Vault</button>
+            </div>
           </form>
-          <button
-            v-if="account.id == keep.creatorId"
-            @click="removeKeep"
-            class="btn btn-danger ms-4 justify-content-end"
-          >
-            Delete
-          </button>
+          <div>
+            <button
+              v-if="account.id == keep.creatorId"
+              @click="removeKeep"
+              class="btn btn-danger ms-4 justify-content-end"
+            >
+              Delete
+            </button>
+          </div>
           <button
             v-if="route.name == 'Vault' && profile.id == account.id"
             @click="deleteVaultKeep"
@@ -106,7 +117,9 @@ export default {
     const route = useRoute();
     onMounted(async () => {
       try {
-        await vaultsService.getMyVaults()
+        if (AppState.user.isAuthenticated) {
+          await vaultsService.getMyVaults()
+        }
       } catch (error) {
         logger.error(error)
         Pop.toast(error.message, 'error')
@@ -169,8 +182,9 @@ export default {
         }
       },
       account: computed(() => AppState.account),
-      vaults: computed(() => AppState.vaults),
-      profile: computed(() => AppState.activeProfile)
+      vaults: computed(() => AppState.myVaults),
+      profile: computed(() => AppState.activeProfile),
+      user: computed(() => AppState.user),
     }
   }
 }

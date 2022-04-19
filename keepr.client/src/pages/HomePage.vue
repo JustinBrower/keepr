@@ -22,6 +22,7 @@ import { AppState } from '../AppState'
 export default {
   setup() {
     onMounted(async () => {
+      AppState.vaults = []
       AppState.keeps = []
       try {
         await keepsService.getAllKeeps()
